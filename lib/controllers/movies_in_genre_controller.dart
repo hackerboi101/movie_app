@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_declarations, unnecessary_overrides, avoid_print
+// ignore_for_file: prefer_const_declarations, unnecessary_overrides
 
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -16,7 +16,7 @@ class MoviesInGenreController extends GetxController {
   }
 
   Future<void> fetchMoviesInGenre(int genreId) async {
-    moviesInGenre.value = <Results>[];
+    moviesInGenre.clear();
     final apiKey = '928f21d80c12084e5af6318f8611a904';
     final apiUrl =
         'https://api.themoviedb.org/3/discover/movie?with_genres=$genreId';
@@ -27,18 +27,19 @@ class MoviesInGenreController extends GetxController {
         final Map<String, dynamic> data = json.decode(response.body);
         final List<dynamic> moviesInGenreData = data['results'];
 
-        moviesInGenre.assignAll(
-          moviesInGenreData
-              .map((results) => Results.fromJson(results))
-              .toList(),
-        );
+        moviesInGenre.value =
+            moviesInGenreData.map((movie) => Results.fromJson(movie)).toList();
       } else {
-        throw Exception('Failed to load data');
+        Get.snackbar(
+          'Error',
+          'Error fetching the data from the API. Status code: ${response.statusCode}',
+          snackPosition: SnackPosition.BOTTOM,
+        );
       }
     } catch (error) {
       Get.snackbar(
         'Error',
-        'Error fetching the data',
+        'Error fetching the data. $error',
         snackPosition: SnackPosition.BOTTOM,
       );
     }

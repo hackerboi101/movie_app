@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:movie_app/controllers/movie_details_controller.dart';
 import 'package:movie_app/controllers/movies_in_genre_controller.dart';
+import 'package:movie_app/controllers/trailers_controller.dart';
 import 'package:movie_app/models/movies_in_genre_model.dart';
+import 'package:movie_app/views/movie_details_page.dart';
 import 'package:movie_app/views/utils/bottom_navigation_bar.dart';
 
 class GenrePage extends StatelessWidget {
@@ -9,6 +12,9 @@ class GenrePage extends StatelessWidget {
 
   final MoviesInGenreController moviesInGenreController =
       Get.put(MoviesInGenreController());
+  final MovieDetailsController movieDetailsController =
+      Get.put(MovieDetailsController());
+  final TrailersController trailersController = Get.put(TrailersController());
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +56,7 @@ class GenrePage extends StatelessWidget {
                 color: Color.fromRGBO(189, 189, 189, 1),
               ),
             ),
+            const SizedBox(height: 10),
             Obx(
               () {
                 final movies = moviesInGenreController.moviesInGenre;
@@ -58,7 +65,7 @@ class GenrePage extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    childAspectRatio: 0.7, // Adjust this for your needs
+                    childAspectRatio: 0.7,
                   ),
                   itemCount: movies.length,
                   itemBuilder: (context, index) {
@@ -76,57 +83,38 @@ class GenrePage extends StatelessWidget {
   }
 
   Widget buildMovieCard(Results movie) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 5,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          // Movie poster
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              'https://image.tmdb.org/t/p/w500${movie.posterPath}',
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
+    return GestureDetector(
+      onTap: () async {
+        await movieDetailsController.fetchMovieDetails(movie.id!);
+        await trailersController.fetchTrailers(movie.id!);
+        Get.to(MovieDetailsPage());
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 5,
+              offset: const Offset(0, 1),
             ),
-          ),
-          // Movie details at top left corner
-          Positioned(
-            top: 10,
-            left: 10,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  movie.originalTitle ?? '',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  movie.releaseDate ?? '',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
+          ],
+        ),
+        child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                'https://image.tmdb.org/t/p/w500${movie.posterPath}',
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

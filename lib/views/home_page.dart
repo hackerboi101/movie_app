@@ -54,6 +54,7 @@ class HomePage extends StatelessWidget {
                 color: Color.fromRGBO(189, 189, 189, 1),
               ),
             ),
+            const SizedBox(height: 20),
             const Text(
               'Popular Movies',
               style: TextStyle(
@@ -62,6 +63,7 @@ class HomePage extends StatelessWidget {
                 color: Color.fromRGBO(189, 189, 189, 1),
               ),
             ),
+            const SizedBox(height: 20),
             const Text(
               'Genres',
               style: TextStyle(
@@ -70,7 +72,7 @@ class HomePage extends StatelessWidget {
                 color: Color.fromRGBO(189, 189, 189, 1),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             Obx(
               () {
                 final genreWidgets = genresController.genres
@@ -94,12 +96,11 @@ class HomePage extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         await moviesInGenreController.fetchMoviesInGenre(genre.id!);
-        moviesInGenreController.fetchGenreName(genre.name!);
+        await moviesInGenreController.fetchGenreName(genre.name!);
         Get.to(GenrePage());
       },
       child: Container(
-        width: (MediaQuery.of(context).size.width - 40) / 2 -
-            10, // Adjusted width for two containers per row
+        width: (MediaQuery.of(context).size.width - 40) / 2 - 5,
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: const Color.fromRGBO(189, 189, 189, 1),
