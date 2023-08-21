@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:flutter/services.dart';
 
 class TrailerPlayerPage extends StatelessWidget {
   final String videoId;
@@ -16,13 +17,20 @@ class TrailerPlayerPage extends StatelessWidget {
       ),
     );
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Center(
-        child: YoutubePlayer(
-          controller: controller,
-          showVideoProgressIndicator: true,
-          progressIndicatorColor: Colors.greenAccent,
+    return WillPopScope(
+      onWillPop: () async {
+        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(
+          child: YoutubePlayer(
+            controller: controller,
+            showVideoProgressIndicator: true,
+            progressIndicatorColor: Colors.greenAccent,
+          ),
         ),
       ),
     );

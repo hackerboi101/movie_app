@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:movie_app/controllers/favorites_controller.dart';
 import 'package:movie_app/controllers/movie_details_controller.dart';
 import 'package:movie_app/controllers/trailers_controller.dart';
 import 'package:movie_app/views/trailer_player_page.dart';
@@ -12,6 +13,8 @@ class MovieDetailsPage extends StatelessWidget {
   final MovieDetailsController movieDetailsController =
       Get.put(MovieDetailsController());
   final TrailersController trailersController = Get.put(TrailersController());
+  final FavoritesController favoritesController =
+      Get.put(FavoritesController());
 
   final RxBool isFavorite = false.obs;
 
@@ -24,6 +27,10 @@ class MovieDetailsPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(27, 35, 48, 1),
         centerTitle: true,
+        automaticallyImplyLeading: true,
+        iconTheme: const IconThemeData(
+          color: Color.fromARGB(255, 43, 114, 105),
+        ),
         title: Column(
           children: [
             Image.asset(
@@ -106,9 +113,16 @@ class MovieDetailsPage extends StatelessWidget {
                     Obx(
                       () => GestureDetector(
                         onTap: () {
-                          isFavorite.value = !isFavorite.value;
+                          if (favoritesController
+                              .isMovieFavorite(movieDetails.id!)) {
+                            favoritesController
+                                .removeFromFavorites(movieDetails.id!);
+                          } else {
+                            favoritesController.addToFavorites(movieDetails);
+                          }
                         },
-                        child: isFavorite.value
+                        child: favoritesController
+                                .isMovieFavorite(movieDetails.id!)
                             ? const Icon(
                                 Icons.favorite,
                                 color: Colors.red,

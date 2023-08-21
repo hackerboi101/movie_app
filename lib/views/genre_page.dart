@@ -23,6 +23,10 @@ class GenrePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(27, 35, 48, 1),
         centerTitle: true,
+        automaticallyImplyLeading: true,
+        iconTheme: const IconThemeData(
+          color: Color.fromARGB(255, 43, 114, 105),
+        ),
         title: Column(
           children: [
             Image.asset(
